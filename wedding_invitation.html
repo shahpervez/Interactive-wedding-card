@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Virat & Anushka - Wedding Invitation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,300;0,400;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        forest: '#2B4234',
+                        'forest-light': '#3d5c4a',
+                        gold: '#D4AF37',
+                        'gold-light': '#FCF6BA',
+                        cream: '#FDFBF7',
+                    },
+                    fontFamily: {
+                        script: ['"Great Vibes"', 'cursive'],
+                        serif: ['"Playfair Display"', 'serif'],
+                        sans: ['"Montserrat"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --gold-gradient: linear-gradient(45deg, #BF953F, #FCF6BA, #B38728, #FBF5B7);
+        }
+
+        body {
+            background-color: #2B4234;
+            color: #FDFBF7;
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #2B4234; }
+        ::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 2px; }
+
+        /* Typography */
+        .text-gold-gradient {
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tracking-widest-xl { letter-spacing: 0.25em; }
+
+        /* Gate Fold Animation */
+        .gate-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 50;
+            pointer-events: none;
+            display: flex;
+        }
+        .gate-panel {
+            width: 50%; height: 100%;
+            background: #2B4234;
+            position: relative;
+            transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+            pointer-events: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .gate-panel::after {
+            content: '';
+            position: absolute;
+            top: 0; width: 2px; height: 100%;
+            background: linear-gradient(to bottom, transparent, #D4AF37, transparent);
+        }
+        .gate-left { transform-origin: left; border-right: 1px solid rgba(212, 175, 55, 0.3); }
+        .gate-left::after { right: 0; }
+        .gate-right { transform-origin: right; border-left: 1px solid rgba(212, 175, 55, 0.3); }
+        .gate-right::after { left: 0; }
+
+        .gate-open .gate-left { transform: translateX(-100%); }
+        .gate-open .gate-right { transform: translateX(100%); }
+
+        .pull-indicator {
+            position: absolute;
+            bottom: 15%;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            animation: bounce 2s infinite;
+            cursor: pointer;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+            40% { transform: translateX(-50%) translateY(-10px); }
+            60% { transform: translateX(-50%) translateY(-5px); }
+        }
+
+        /* Scratch Card */
+        .scratch-container {
+            position: relative;
+            width: 100%;
+            max-width: 340px;
+            height: 180px;
+            margin: 0 auto;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .scratch-canvas {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 2;
+            cursor: crosshair;
+            touch-action: none;
+        }
+        .scratch-reveal {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: #1a2e24;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* Confetti */
+        .confetti-container {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 40;
+            overflow: hidden;
+        }
+        .confetti {
+            position: absolute;
+            width: 8px; height: 8px;
+            background: #D4AF37;
+            animation: fall linear forwards;
+        }
+        @keyframes fall {
+            to { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* Timeline */
+        .timeline-line {
+            position: absolute;
+            left: 24px;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background: linear-gradient(to bottom, #D4AF37, transparent);
+        }
+        .timeline-node {
+            width: 12px; height: 12px;
+            border-radius: 50%;
+            background: #D4AF37;
+            border: 2px solid #2B4234;
+            position: relative;
+            z-index: 2;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+        }
+
+        /* Glassmorphism */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        /* Form Inputs */
+        .gold-input {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.4);
+            color: #FDFBF7;
+            padding: 12px 0;
+            width: 100%;
+            outline: none;
+            transition: all 0.3s ease;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .gold-input:focus {
+            border-bottom-color: #D4AF37;
+            box-shadow: 0 2px 10px -2px rgba(212, 175, 55, 0.3);
+        }
+        .gold-input::placeholder { color: rgba(253, 251, 247, 0.4); }
+
+        /* Animations */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .fade-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .stagger-1 { transition-delay: 0.1s; }
+        .stagger-2 { transition-delay: 0.2s; }
+        .stagger-3 { transition-delay: 0.3s; }
+
+        /* Countdown Flip */
+        .countdown-box {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 8px;
+            padding: 12px 8px;
+            min-width: 64px;
+            text-align: center;
+        }
+
+        /* Hero Parallax */
+        .hero-bg {
+            background-image: url('https://images.unsplash.com/photo-1583939003579-730e3918a45a?q=80&w=1000&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center 30%;
+            position: relative;
+        }
+        .hero-bg::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(43,66,52,0.3) 0%, rgba(43,66,52,0.8) 100%);
+        }
+
+        /* Language Toggle */
+        .lang-toggle {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 30;
+            background: rgba(43, 66, 52, 0.9);
+            border: 1px solid #D4AF37;
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: 12px;
+            color: #D4AF37;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        .lang-toggle:hover { background: #D4AF37; color: #2B4234; }
+
+        /* Decorative elements */
+        .ornament {
+            width: 40px;
+            height: 1px;
+            background: linear-gradient(to right, transparent, #D4AF37, transparent);
+            margin: 0 auto;
+        }
+        .diamond-sep {
+            width: 6px; height: 6px;
+            background: #D4AF37;
+            transform: rotate(45deg);
+            margin: 8px auto;
+        }
+
+        /* Map container */
+        .map-container iframe {
+            filter: grayscale(0.3) brightness(0.9) contrast(1.1);
+            border-radius: 12px;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Background Music -->
+    <audio id="bg-music" loop preload="auto">
+        <source src="Edd_Sheeran.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Audio Control Button -->
+    <button id="audioControl" onclick="toggleAudio()" class="fixed top-6 right-6 z-50 w-12 h-12 rounded-full border border-gold/50 flex items-center justify-center bg-forest/80 backdrop-blur-md hidden text-gold hover:bg-gold hover:text-forest transition-all shadow-lg">
+        <i class="fas fa-music"></i>
+    </button>
+
+    <!-- Gate Fold Overlay -->
+    <div id="gate" class="gate-container cursor-pointer" onclick="openGate()">
+        <div class="gate-panel gate-left">
+            <div class="absolute inset-0 opacity-10" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23D4AF37\' fill-opacity=\'0.4\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+        </div>
+        <div class="gate-panel gate-right">
+            <div class="absolute inset-0 opacity-10" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23D4AF37\' fill-opacity=\'0.4\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+        </div>
+
+        <!-- Center Content -->
+        <div class="absolute inset-0 flex flex-col items-center justify-center z-10 pointer-events-none">
+            <div class="text-center mb-8">
+                <div class="w-24 h-24 rounded-full border-2 border-gold/30 flex items-center justify-center mx-auto mb-6 relative">
+                    <div class="absolute inset-0 rounded-full border border-gold/20 animate-ping"></div>
+                    <span class="font-script text-4xl text-gold-gradient">V & A</span>
+                </div>
+            </div>
+
+            <div class="pull-indicator pointer-events-auto" id="pull-btn" onclick="openGate()">
+                <div class="w-12 h-12 rounded-full border border-gold/50 flex items-center justify-center bg-forest/50 backdrop-blur-sm">
+                    <i class="fas fa-chevron-down text-gold text-lg"></i>
+                </div>
+                <span class="text-[10px] tracking-widest-xl uppercase text-gold/80 font-medium">Pull Down to Open</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confetti Container -->
+    <canvas id="confetti-canvas" class="confetti-container"></canvas>
+
+    <!-- Main Content -->
+    <main id="main-content" class="opacity-0 transition-opacity duration-1000">
+
+        <!-- Hero Section -->
+        <section class="relative h-screen hero-bg flex items-end pb-20">
+            <div class="relative z-10 w-full text-center px-6">
+                <p class="text-xs tracking-widest-xl uppercase text-gold mb-4 fade-up">The Wedding Celebration of</p>
+                <h1 class="font-script text-6xl md:text-8xl text-gold-gradient mb-2 fade-up stagger-1">Virat & Anushka</h1>
+                <div class="ornament my-4 fade-up stagger-2"></div>
+                <p class="text-sm text-cream/80 font-light tracking-wide fade-up stagger-2">Request the honour of your presence</p>
+
+                <div class="mt-12 fade-up stagger-3">
+                    <div class="flex flex-col items-center gap-2 text-gold/60">
+                        <span class="text-[10px] tracking-widest-xl uppercase">Scroll</span>
+                        <div class="w-[1px] h-8 bg-gradient-to-b from-gold/60 to-transparent"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Welcome & Scratch Card -->
+        <section class="py-20 px-6 relative">
+            <div class="max-w-md mx-auto text-center">
+                <div class="fade-up">
+                    <div class="ornament mb-4"></div>
+                    <div class="diamond-sep"></div>
+                    <p class="font-serif text-lg text-cream/90 leading-relaxed italic my-8">
+                        Big day, big vibes, big celebration! Come eat, dance & celebrate with us!
+                    </p>
+                    <div class="diamond-sep"></div>
+                    <div class="ornament mt-4"></div>
+                </div>
+
+                <section class="scratch-section mt-16 fade-up">
+                    <div class="section-header text-center mb-6">
+                        <p class="text-gold font-script text-2xl section-title">Scratch to Reveal</p>
+                        <div class="section-divider"></div>
+                    </div>
+                    <div class="scratch-container" id="scratchContainer">
+                        <canvas class="scratch-canvas" id="scratchCanvas"></canvas>
+                        <div class="scratch-reveal flex flex-col items-center justify-center">
+                            <p class="reveal-label font-script text-3xl text-gold mb-2">You're Invited!</p>
+                            <p class="reveal-date font-serif text-xl text-cream font-semibold">December 11, 2026</p>
+                            <p class="reveal-day text-gold/80 text-sm mt-1">Friday</p>
+                            <p class="reveal-time text-gold/80 text-sm">1:30 PM</p>
+                        </div>
+                    </div>
+                    <p class="scratch-hint text-[10px] text-cream/40 mt-4 tracking-widest uppercase">Scratch to Reveal</p>
+                </section>
+
+                <!-- Couple Photo -->
+                <div class="mt-12 fade-up">
+                    <div class="relative rounded-2xl overflow-hidden shadow-2xl border border-gold/20">
+                        <img src="https://images.unsplash.com/photo-1591604466107-ec97de577aff?q=80&w=800&auto=format&fit=crop" 
+                             alt="Couple" class="w-full h-64 object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-forest/60 to-transparent"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Countdown -->
+        <section class="py-16 px-6 bg-forest-light/30">
+            <div class="max-w-md mx-auto text-center">
+                <div class="fade-up">
+                    <p class="font-script text-3xl text-gold mb-2">Counting Down to Forever</p>
+                    <div class="diamond-sep mb-8"></div>
+                </div>
+
+                <div class="grid grid-cols-4 gap-3 fade-up stagger-1" id="countdown">
+                    <div class="countdown-box">
+                        <div class="font-serif text-2xl text-cream font-bold" id="days">000</div>
+                        <div class="text-[9px] text-gold/70 uppercase tracking-widest mt-1">Days</div>
+                    </div>
+                    <div class="countdown-box">
+                        <div class="font-serif text-2xl text-cream font-bold" id="hours">00</div>
+                        <div class="text-[9px] text-gold/70 uppercase tracking-widest mt-1">Hours</div>
+                    </div>
+                    <div class="countdown-box">
+                        <div class="font-serif text-2xl text-cream font-bold" id="minutes">00</div>
+                        <div class="text-[9px] text-gold/70 uppercase tracking-widest mt-1">Minutes</div>
+                    </div>
+                    <div class="countdown-box">
+                        <div class="font-serif text-2xl text-cream font-bold" id="seconds">00</div>
+                        <div class="text-[9px] text-gold/70 uppercase tracking-widest mt-1">Seconds</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Timeline -->
+        <section class="py-20 px-6">
+            <div class="max-w-md mx-auto">
+                <div class="text-center mb-12 fade-up">
+                    <i class="far fa-clock text-gold text-xl mb-3"></i>
+                    <p class="font-script text-3xl text-gold">Program Timeline</p>
+                    <div class="ornament mt-4"></div>
+                </div>
+
+                <div class="relative pl-4 fade-up">
+                    <div class="timeline-line"></div>
+
+                    <div class="mb-10 relative">
+                        <div class="flex items-start gap-6">
+                            <div class="timeline-node mt-1.5 shrink-0"></div>
+                            <div>
+                                <p class="text-gold font-semibold text-sm">4:00 PM</p>
+                                <h3 class="font-serif text-lg text-cream mt-1">Guest Arrival</h3>
+                                <p class="text-cream/50 text-xs mt-1">Welcome drinks & refreshments</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-10 relative">
+                        <div class="flex items-start gap-6">
+                            <div class="timeline-node mt-1.5 shrink-0"></div>
+                            <div>
+                                <p class="text-gold font-semibold text-sm">5:00 PM</p>
+                                <h3 class="font-serif text-lg text-cream mt-1">Wedding Ceremony</h3>
+                                <p class="text-cream/50 text-xs mt-1">Exchange of vows & rituals</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="relative">
+                        <div class="flex items-start gap-6">
+                            <div class="timeline-node mt-1.5 shrink-0"></div>
+                            <div>
+                                <p class="text-gold font-semibold text-sm">7:00 PM</p>
+                                <h3 class="font-serif text-lg text-cream mt-1">Dinner Reception</h3>
+                                <p class="text-cream/50 text-xs mt-1">Feast, dance & celebration</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Venue -->
+        <section class="py-16 px-6 bg-forest-light/20">
+            <div class="max-w-md mx-auto text-center">
+                <div class="fade-up">
+                    <i class="fas fa-map-marker-alt text-gold text-xl mb-3"></i>
+                    <p class="font-script text-3xl text-gold mb-2">The Venue</p>
+                    <div class="diamond-sep"></div>
+                    <h3 class="font-serif text-xl text-cream mt-6">Borgo Finocchieto</h3>
+                    <p class="text-cream/60 text-sm mt-1">Borgo Finocchieto, Italy</p>
+                </div>
+
+                <div class="mt-8 rounded-xl overflow-hidden border border-gold/20 shadow-xl fade-up stagger-1 map-container">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d11648.567184383507!2d11.45!3d43.1!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDPCsDA2JzAwLjAiTiAxMcKwMjcnMDAuMCJF!5e0!3m2!1sen!2sus!4v1600000000000!5m2!1sen!2sus"
+                        width="100%" 
+                        height="250" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy"
+                        class="grayscale">
+                    </iframe>
+                </div>
+
+                <a href="https://maps.google.com/?q=Borgo+Finocchieto,Italy" target="_blank" 
+                   class="inline-block mt-6 px-8 py-3 border-2 border-gold text-gold rounded-full text-sm tracking-widest uppercase hover:bg-gold hover:text-forest transition-all duration-300 fade-up stagger-2">
+                    View on Google Maps
+                </a>
+            </div>
+        </section>
+
+        <!-- Pre-Wedding Events -->
+        <section class="py-16 px-6">
+            <div class="max-w-md mx-auto text-center fade-up">
+                <i class="fas fa-om text-gold text-xl mb-3"></i>
+                <p class="font-script text-3xl text-gold mb-6">Pre-Wedding Events</p>
+                <div class="space-y-4">
+                    <div class="glass-panel rounded-lg p-4">
+                        <p class="font-serif text-cream">Mehendi Ceremony</p>
+                    </div>
+                    <div class="glass-panel rounded-lg p-4">
+                        <p class="font-serif text-cream">Haldi Ceremony</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gifts -->
+        <section class="py-12 px-6 text-center">
+            <div class="max-w-md mx-auto fade-up">
+                <i class="fas fa-gift text-gold text-xl mb-3"></i>
+                <p class="font-script text-3xl text-gold mb-4">Gifts</p>
+                <div class="ornament mb-6"></div>
+                <p class="text-cream/70 text-sm italic leading-relaxed">
+                    Your presence is presents enough, but if you wish to bless us, a small gift box will be at the venue.
+                </p>
+            </div>
+        </section>
+
+        <!-- RSVP Form -->
+        <section class="py-20 px-6 bg-forest-light/20">
+            <div class="max-w-md mx-auto">
+                <div class="text-center mb-10 fade-up">
+                    <i class="far fa-envelope text-gold text-xl mb-3"></i>
+                    <p class="font-script text-3xl text-gold">Send a Message</p>
+                    <div class="diamond-sep mt-4"></div>
+                </div>
+
+                <form id="rsvp-form" class="glass-panel rounded-2xl p-8 space-y-6 fade-up stagger-1" onsubmit="handleRSVP(event)">
+                    <div>
+                        <label class="text-[10px] text-gold uppercase tracking-widest mb-2 block">Your Name</label>
+                        <input type="text" placeholder="Your full name" class="gold-input" required>
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-gold uppercase tracking-widest mb-2 block">Email</label>
+                        <input type="email" placeholder="you@example.com" class="gold-input" required>
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-gold uppercase tracking-widest mb-2 block">Will you be attending?</label>
+                        <select class="gold-input bg-transparent cursor-pointer" required>
+                            <option value="" disabled selected class="bg-forest">Select...</option>
+                            <option value="yes" class="bg-forest">Happily Attending</option>
+                            <option value="no" class="bg-forest">Regretfully Decline</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-gold uppercase tracking-widest mb-2 block">Your Message</label>
+                        <textarea placeholder="Write your wishes..." rows="3" class="gold-input resize-none"></textarea>
+                    </div>
+                    <button type="submit" id="submit-btn"
+                            class="w-full py-4 bg-gold text-forest font-semibold rounded-full tracking-widest uppercase text-xs hover:bg-gold-light transition-all duration-300 relative overflow-hidden">
+                        <span id="btn-text">Send Message</span>
+                        <span id="btn-loader" class="hidden absolute inset-0 flex items-center justify-center">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </span>
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="py-20 px-6 text-center relative">
+            <div class="max-w-md mx-auto">
+                <div class="fade-up">
+                    <p class="font-script text-3xl text-cream mb-4">We can't wait to celebrate with you!</p>
+                    <div class="ornament mb-6"></div>
+                    <p class="font-script text-5xl text-gold-gradient">Virat & Anushka</p>
+                </div>
+
+                <div class="mt-16 pt-8 border-t border-gold/10 fade-up stagger-1">
+                    <p class="text-[10px] text-cream/30 tracking-widest mb-2">WITH LOVE • 2026</p>
+                    <p class="text-[10px] text-cream/50 tracking-widest uppercase">
+                        All rights reserved by <a href="https://portfolio-rose-ten-32.vercel.app/" target="_blank" class="text-gold hover:underline">Shahroz Pervez</a>
+                    </p>
+                </div>
+            </div>
+        </footer>
+    </main>
+
+    <script>
+        // Audio Logic
+        let isPlaying = false;
+        function toggleAudio() {
+            const bgMusic = document.getElementById('bg-music');
+            const audioControl = document.getElementById('audioControl');
+            if (isPlaying) {
+                bgMusic.pause();
+                audioControl.innerHTML = '<i class="fas fa-volume-mute"></i>';
+            } else {
+                bgMusic.play();
+                audioControl.innerHTML = '<i class="fas fa-music"></i>';
+            }
+            isPlaying = !isPlaying;
+        }
+
+        // Gate Fold Logic
+        let gateOpened = false;
+        function openGate() {
+            if (gateOpened) return;
+            gateOpened = true;
+            window.scrollTo(0, 0);
+            document.getElementById('gate').classList.add('gate-open');
+            document.getElementById('main-content').classList.remove('opacity-0');
+
+            // Start Audio
+            const bgMusic = document.getElementById('bg-music');
+            const audioControl = document.getElementById('audioControl');
+            bgMusic.play().then(() => {
+                isPlaying = true;
+                audioControl.innerHTML = '<i class="fas fa-music"></i>';
+                audioControl.classList.remove('hidden');
+            }).catch(() => {
+                isPlaying = false;
+                audioControl.innerHTML = '<i class="fas fa-volume-mute"></i>';
+                audioControl.classList.remove('hidden');
+            });
+
+            setTimeout(() => {
+                document.getElementById('gate').style.display = 'none';
+                initScrollAnimations();
+            }, 1200);
+        }
+
+        // Touch/Drag support for gate
+        let startY = 0;
+        let isDragging = false;
+        const gate = document.getElementById('gate');
+
+        // Touch events
+        gate.addEventListener('touchstart', (e) => { startY = e.touches[0].clientY; }, {passive: true});
+        gate.addEventListener('touchmove', (e) => {
+            if (gateOpened) return;
+            const diff = e.touches[0].clientY - startY;
+            if (diff > 80) openGate();
+        }, {passive: true});
+
+        // Mouse events for desktop
+        gate.addEventListener('mousedown', (e) => { 
+            isDragging = true;
+            startY = e.clientY; 
+        });
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging || gateOpened) return;
+            const diff = e.clientY - startY;
+            if (diff > 80) {
+                openGate();
+                isDragging = false;
+            }
+        });
+        window.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+
+        // Scroll Animations
+        function initScrollAnimations() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+            document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+        }
+
+        // Countdown Timer
+        const weddingDate = new Date('December 11, 2026 13:30:00').getTime();
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = weddingDate - now;
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById('days').textContent = String(days).padStart(3, '0');
+            document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+            document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+            document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+        }
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        // ==================== SCRATCH CARD ====================
+        const scratchCanvas = document.getElementById('scratchCanvas');
+        const scratchContainer = document.getElementById('scratchContainer');
+        const ctx = scratchCanvas.getContext('2d');
+        let isScratching = false;
+        let scratchedPixels = 0;
+        let totalPixels = 0;
+        let scratchRevealed = false;
+
+        function initScratch() {
+            const rect = scratchContainer.getBoundingClientRect();
+            scratchCanvas.width = rect.width;
+            scratchCanvas.height = rect.height;
+            totalPixels = scratchCanvas.width * scratchCanvas.height;
+
+            // Fill with gold
+            ctx.fillStyle = '#D4AF37';
+            ctx.fillRect(0, 0, scratchCanvas.width, scratchCanvas.height);
+
+            // Add pattern
+            ctx.fillStyle = '#C4A030';
+            for (let i = 0; i < 50; i++) {
+                const x = Math.random() * scratchCanvas.width;
+                const y = Math.random() * scratchCanvas.height;
+                const size = Math.random() * 20 + 5;
+                ctx.fillRect(x, y, size, size);
+            }
+
+            // Add text
+            ctx.fillStyle = '#B8941F';
+            ctx.font = 'bold 14px Montserrat';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('✦ Scratch to Reveal ✦', scratchCanvas.width / 2, scratchCanvas.height / 2);
+
+            ctx.globalCompositeOperation = 'destination-out';
+        }
+
+        function getScratchPos(e) {
+            const rect = scratchCanvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return {
+                x: clientX - rect.left,
+                y: clientY - rect.top
+            };
+        }
+
+        function scratch(e) {
+            if (!isScratching) return;
+            e.preventDefault();
+            const pos = getScratchPos(e);
+            
+            ctx.beginPath();
+            ctx.arc(pos.x, pos.y, 25, 0, Math.PI * 2);
+            ctx.fill();
+
+            checkScratchProgress();
+        }
+
+        function checkScratchProgress() {
+            if (scratchRevealed) return;
+            
+            const imageData = ctx.getImageData(0, 0, scratchCanvas.width, scratchCanvas.height);
+            const pixels = imageData.data;
+            let transparent = 0;
+            
+            for (let i = 3; i < pixels.length; i += 4) {
+                if (pixels[i] < 128) transparent++;
+            }
+            
+            const percent = (transparent / totalPixels) * 100;
+            
+            if (percent > 30) {
+                scratchRevealed = true;
+                ctx.clearRect(0, 0, scratchCanvas.width, scratchCanvas.height);
+                triggerConfetti();
+            }
+        }
+
+        scratchCanvas.addEventListener('mousedown', (e) => { isScratching = true; scratch(e); });
+        scratchCanvas.addEventListener('mousemove', scratch);
+        scratchCanvas.addEventListener('mouseup', () => isScratching = false);
+        scratchCanvas.addEventListener('mouseleave', () => isScratching = false);
+        scratchCanvas.addEventListener('touchstart', (e) => { isScratching = true; scratch(e); }, {passive: false});
+        scratchCanvas.addEventListener('touchmove', scratch, {passive: false});
+        scratchCanvas.addEventListener('touchend', () => isScratching = false);
+
+        // ==================== CONFETTI ====================
+        const confettiCanvas = document.getElementById('confetti-canvas');
+        const confettiCtx = confettiCanvas.getContext('2d');
+        let confettiParticles = [];
+        let confettiActive = false;
+
+        function resizeConfetti() {
+            confettiCanvas.width = window.innerWidth;
+            confettiCanvas.height = window.innerHeight;
+        }
+        resizeConfetti();
+        window.addEventListener('resize', resizeConfetti);
+
+        function triggerConfetti() {
+            confettiActive = true;
+            const colors = ['#D4AF37', '#E8C84A', '#F5F0E8', '#2B4234', '#C4A030', '#FFF8E7'];
+            
+            for (let i = 0; i < 150; i++) {
+                confettiParticles.push({
+                    x: Math.random() * confettiCanvas.width,
+                    y: Math.random() * confettiCanvas.height - confettiCanvas.height,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    size: Math.random() * 6 + 2,
+                    speedY: Math.random() * 3 + 2,
+                    speedX: Math.random() * 2 - 1,
+                    rotation: Math.random() * 360,
+                    rotationSpeed: Math.random() * 4 - 2
+                });
+            }
+            
+            animateConfetti();
+            setTimeout(() => { confettiActive = false; }, 4000);
+        }
+
+        function animateConfetti() {
+            if (!confettiActive && confettiParticles.length === 0) {
+                confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+                return;
+            }
+
+            confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+
+            confettiParticles = confettiParticles.filter(p => p.y < confettiCanvas.height + 20);
+
+            confettiParticles.forEach(p => {
+                p.y += p.speedY;
+                p.x += p.speedX;
+                p.rotation += p.rotationSpeed;
+
+                confettiCtx.save();
+                confettiCtx.translate(p.x, p.y);
+                confettiCtx.rotate(p.rotation * Math.PI / 180);
+                confettiCtx.fillStyle = p.color;
+                confettiCtx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+                confettiCtx.restore();
+            });
+
+            requestAnimationFrame(animateConfetti);
+        }
+
+        // RSVP Handler
+        function handleRSVP(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submit-btn');
+            const text = document.getElementById('btn-text');
+            const loader = document.getElementById('btn-loader');
+
+            text.classList.add('opacity-0');
+            loader.classList.remove('hidden');
+
+            setTimeout(() => {
+                loader.classList.add('hidden');
+                text.textContent = 'See You There!';
+                text.classList.remove('opacity-0');
+                btn.classList.add('bg-green-600', 'text-white');
+                btn.classList.remove('bg-gold', 'text-forest');
+
+                triggerConfetti();
+            }, 1500);
+        }
+
+
+        // Init
+        window.addEventListener('load', () => {
+            setTimeout(initScratch, 100);
+        });
+        window.addEventListener('resize', () => {
+            if (!gateOpened) initScratch();
+        });
+    </script>
+</body>
+</html>
